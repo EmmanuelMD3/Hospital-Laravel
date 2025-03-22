@@ -2,51 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Empleado;
 use Illuminate\Http\Request;
+use App\Models\Empleado;
 
 class EmpleadoController extends Controller
 {
-    // Método para mostrar el formulario
+    // Método para mostrar el formulario de registro de empleado
     public function create()
     {
-        return view('empleado.create');
+        return view('empleado'); // Retorna la vista empleado.blade.php
     }
 
-    // Método para procesar el formulario y guardar los datos
+    // Método para procesar el formulario
     public function store(Request $request)
     {
         // Validar los datos del formulario
         $request->validate([
-            'matricula' => 'required|integer|unique:Empleados',
-            'nombre' => 'required|string|max:20',
-            'apellidoP' => 'required|string|max:20',
-            'apellidoM' => 'required|string|max:20',
+            'nombre' => 'required|string|max:255',
+            'apellidoP' => 'required|string|max:255',
+            'apellidoM' => 'required|string|max:255',
+            'matricula' => 'required|string|max:255',
             'IDServicio' => 'required|integer',
             'sueldo' => 'required|numeric',
-            'correo' => 'required|email|max:30',
-            'usuario' => 'required|string|max:10',
-            'contrasenia_hash' => 'required|string|max:30',
+            'email' => 'required|email|max:255',
+            'usuario' => 'required|string|max:50', // Ajusta el tamaño según la columna en la base de datos
+            'contrasenia_hash' => 'required|string|max:255',
             'roles' => 'required|integer',
-            'foto' => 'required', // Asegúrate de manejar la subida de archivos correctamente
+            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        // Guardar la foto en el servidor
+        $fotoPath = $request->file('foto')->store('fotos', 'public');
 
         // Crear un nuevo registro en la base de datos
         Empleado::create([
-            'matricula' => $request->matricula,
             'nombre' => $request->nombre,
             'apellidoP' => $request->apellidoP,
             'apellidoM' => $request->apellidoM,
+            'matricula' => $request->matricula,
             'IDServicio' => $request->IDServicio,
             'sueldo' => $request->sueldo,
-            'correo' => $request->correo,
+            'correo' => $request->email,
             'usuario' => $request->usuario,
-            'contrasenia_hash' => $request->contrasenia_hash,
+            'contrasenia_hash' => bcrypt($request->contrasenia_hash), // Encriptar la contraseña
             'roles' => $request->roles,
-            'foto' => $request->foto, // Asegúrate de manejar la subida de archivos correctamente
+            'foto' => $fotoPath,
         ]);
 
         // Redirigir al usuario con un mensaje de éxito
-        return redirect()->route('empleado.create')->with('success', 'Empleado agregado correctamente.');
+        return redirect()->route('empleado.create')->with('success', 'Empleado registrado correctamente.');
     }
 }

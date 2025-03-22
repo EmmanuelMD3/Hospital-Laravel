@@ -7,10 +7,10 @@ Route::post('/servicio/store', [ServicioController::class, 'store'])->name('serv
 
 use App\Http\Controllers\EmpleadoController;
 
-// Ruta para mostrar el formulario de empleado
+// Ruta para mostrar el formulario de registro de empleado
 Route::get('/empleado/create', [EmpleadoController::class, 'create'])->name('empleado.create');
 
-// Ruta para procesar el formulario y guardar los datos
+// Ruta para procesar el formulario
 Route::post('/empleado/store', [EmpleadoController::class, 'store'])->name('empleado.store');
 
 use App\Http\Controllers\PacienteController;
