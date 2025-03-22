@@ -20,3 +20,11 @@ Route::get('/paciente/create', [PacienteController::class, 'create'])->name('pac
 
 // Ruta para procesar el formulario y guardar los datos
 Route::post('/paciente/store', [PacienteController::class, 'store'])->name('paciente.store');
+
+use App\Http\Controllers\AuthController;
+
+// Ruta para mostrar el formulario de login
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+
+// Ruta para procesar el formulario de login
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
